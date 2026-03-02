@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+
+  mongodb:
+    image: mongo:7
+    container_name: pos-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./be
+    container_name: pos-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/POS
+
+  frontend:
+    build: ./fe
+    container_name: pos-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
